@@ -8,10 +8,11 @@ using namespace std;
 class Player {
 private:
 	string name;
+	string category;
 	//int runs;
 	//int wickets;
-	string category;
 	static int number;
+
 public:
 	void setName(string);
 	string getName();

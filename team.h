@@ -1,6 +1,7 @@
 #pragma once
 #include "player.h"
 #include <time.h>
+#include <iomanip>
 
 
 class Team {
@@ -8,10 +9,12 @@ private:
 	string name;
 	Player squad[16] = {};					// complete 16 member squad
 	Player beta[11] = {};					// Final playing 11 member squad
-	//int totalRuns;
-	//int wickets;
+	int totalRuns;
+	int wickets;
 	//int overs;
-	//bool toss;
+	bool toss;
+	string firstIn;
+	string secondIn;
 
 
 public:
@@ -20,17 +23,43 @@ public:
 
 	void setPlayers(int);
 	//string getplayers();
+	int getInnings();
 	void swap(int, int);
 	void playingOrder();
 	void display();
 	void displaySquad();
-	bool gameToss();
-	void setName(string);
+	bool gameToss(int, Team&);
+	void setName(int);
+	void addRuns(int);
+	void addWicket();
 };
 
 
-void Team::setName(string name) {
-	this->name = name;
+void Team::setName(int num) {
+	if (num == 1) {
+		this->name = "Pakistan";
+	}
+	else if (num == 2) {
+		this->name = "Australia";
+	}
+	else if (num == 3) {
+		this->name = "New Zealand";
+	}
+	else if(num == 4) {
+		this->name = "Zimbabwe";
+	}
+	else{
+		this->name = "Sri Lanka";
+	}
+}
+
+// setting Innings
+int Team::getInnings() {
+	if (this->firstIn == "Bat") {
+		return 1;
+	}
+	else
+		return 0;
 }
 
 // set player member function
@@ -68,7 +97,6 @@ void Team::setPlayers(int t) {
 				else {
 					squad[i].setCategory("Wicket-Keeper");
 				}
-
 				i++;
 			}
 			count++;
@@ -77,6 +105,7 @@ void Team::setPlayers(int t) {
 	file.close();
 
 	cout << "Select Your final playing 11: " << endl;
+
 
 	int index = 0;
 	for (int i = 0; i < 11; i++)
@@ -172,14 +201,48 @@ void Team::displaySquad() {
 }
 
 // TOSS
-bool Team::gameToss() {
+bool Team::gameToss(int userToss, Team &comp) {
 	srand(time(0));
 
 	int random = rand() % 2;
+	cout << random;
 
 	if (random == 0) {
-		return 0;
+		this->toss = 0;
+		comp.toss = 1;
 	}
 	else
-		return 1;
+		this->toss = 1;
+		comp.toss = 0;
+
+	if (userToss == this->toss) {
+		int choice;
+		cout << "Congratulations! You won the toss.. Would you like to bat or bowl ? " << endl;
+		cout << "1. Bat\n2. Ball" << endl;
+		
+		cout << "Your choice";
+		cin >> choice;
+		if (choice == 1) {
+			this->firstIn = "Bat";
+			this->secondIn = "Ball";
+		}
+		else{
+			comp.firstIn = "Ball";
+			comp.secondIn = "Bat";
+		}
+	}
+	else {
+		cout << "Sorry, You lost the toss..The opponent has chosen to bat. " << endl;
+
+	}
+
+	return random;
+}
+
+void Team::addRuns(int runs) {
+	this->totalRuns += runs;
+}
+
+void Team::addWicket() {
+	this->wickets = +1;
 }
