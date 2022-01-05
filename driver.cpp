@@ -1,16 +1,10 @@
-#include <iostream>
-#include <string>
-#include <fstream>
 #include "player.h"
 #include "team.h"
-#include "batting.h"
-
-using namespace std;
 
 // Function prototypes
 bool isStrike();
 string bowl();
-int Bat(string, Team*, Team*);
+int Bat(string, Team*, Team*, Player*, Player*);
 int out(Team*);
 
 // -----------------------------------------------
@@ -78,20 +72,31 @@ int main() {
 
 			if (alpha.getInnings()) {		// if alpha chooses to bat			
 				battingTeam = &alpha;
-				//batsman = battingTe
 				bowlingTeam = &comp;
 			}
 			else {
 				battingTeam = &comp;
 				bowlingTeam = &alpha;
 			}
-		
+			
+			int balls = 0;
+			int wickets = 0;
 			for (int i = 0; i < 10; i++) {
+
+				// Overall Display Fuction
+
+				// referencing to the current batsman and bowler
+				batsman = &battingTeam->getPlayer(wickets);
+				bowler = &bowlingTeam->getPlayer(balls/6);
+
 				// calling the balling function
 				string ball = bowl();
 
 				// calling the batting function
-				int wickets = Bat(ball, battingTeam, bowlingTeam);
+				wickets = Bat(ball, battingTeam, bowlingTeam, batsman, bowler);
+				
+				// incrementing the balls
+				balls++;
 			}
 		}
 
@@ -141,10 +146,12 @@ bool isStrike() {					// if function returns 1 than score will be incremented ac
 	return random;
 }
 
-int Bat(string ball, Team *battingTeam, Team *bowlingTeam) {
+int Bat(string ball, Team *battingTeam, Team *bowlingTeam, Player *batsman, Player *bowler) {
 	
 	cout << " -> To strike press 1" << endl;
 	cout << " -> To leave press 2" << endl;
+
+
 
 		if (isStrike()) {
 
@@ -162,7 +169,7 @@ int Bat(string ball, Team *battingTeam, Team *bowlingTeam) {
 			else if (ball == "noBall") {			// no ball
 				int boundary[2] = { 4, 6 };
 
-				random = rand() % 2;
+				int random = rand() % 2;
 				battingTeam->addRuns(boundary[random]);
 				// *batsman.runs += boundary[random];
 				// *bowler.runs += boundary[random];
@@ -177,7 +184,7 @@ int Bat(string ball, Team *battingTeam, Team *bowlingTeam) {
 			else if (ball == "spin") {			// spin
 				int score[5] = { 0, 1, 2, 4, 6 };
 
-				random = rand() % 5;
+				int random = rand() % 5;
 				battingTeam->addRuns(score[random]);
 				// *batsman.runs += score[random];
 				// *bowler.runs += score[random];
@@ -195,7 +202,7 @@ string bowl() {
 
 	string bowl[4] = { "bouncer", "noBall", "wide", "spin" };
 
-	random = rand() % 4;
+	int random = rand() % 4;
 
 	return bowl[random];
 

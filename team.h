@@ -18,11 +18,8 @@ private:
 
 
 public:
-	//compisition
-	//Player alpha;
 
 	void setPlayers(int);
-	//string getplayers();
 	int getInnings();
 	void swap(int, int);
 	void playingOrder();
@@ -32,8 +29,15 @@ public:
 	void setName(int);
 	void addRuns(int);
 	void addWicket();
+	Player& getPlayer(int);
 };
 
+
+// get player reference function
+Player& Team::getPlayer(int num) {
+	
+	return this->beta[num];
+}
 
 void Team::setName(int num) {
 	if (num == 1) {

@@ -142,7 +142,6 @@
     <ClCompile Include="driver.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="batting.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="team.h" />
   </ItemGroup>
