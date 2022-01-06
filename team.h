@@ -19,6 +19,7 @@ private:
 
 public:
 
+	Team();
 	void setPlayers(int);
 	int getInnings();
 	void swap(int, int);
@@ -27,11 +28,36 @@ public:
 	void displaySquad();
 	bool gameToss(int, Team&);
 	void setName(int);
+	string getName();
 	void addRuns(int);
 	void addWicket();
+	int getWickets();
 	Player& getPlayer(int);
+	int getRuns();
 };
 
+// constructor for the class Team
+Team::Team() {
+	totalRuns = 0;
+	wickets = 0;
+}
+
+//get wickets function
+int Team::getWickets() {
+
+	return this->wickets;
+}
+
+// get Runs function
+int Team::getRuns() {
+
+	return this->totalRuns;
+}
+
+// get name function
+string Team::getName() {
+	return this->name;
+}
 
 // get player reference function
 Player& Team::getPlayer(int num) {
@@ -208,7 +234,7 @@ void Team::displaySquad() {
 bool Team::gameToss(int userToss, Team &comp) {
 	srand(time(0));
 
-	int random = rand() % 2;
+	int random = 1;/*rand() % 1;*/
 	cout << random;
 
 	if (random == 0) {
@@ -236,7 +262,7 @@ bool Team::gameToss(int userToss, Team &comp) {
 		}
 	}
 	else {
-		cout << "Sorry, You lost the toss..The opponent has chosen to bat. " << endl;
+		cout << "Sorry, You lost the toss.. " << endl;
 
 	}
 

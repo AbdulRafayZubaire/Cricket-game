@@ -9,19 +9,37 @@ class Player {
 private:
 	string name;
 	string category;
-	//int runs;
-	//int wickets;
-	static int number;
+	int runs;
+	int wickets;
 
 public:
 	void setName(string);
 	string getName();
 	void setCategory(string);
 	string getCategory();
-
+	void addRuns(int);
+	void addWickets();
+	Player();
 };
-int Player::number = 1;					// static member
 
+// constructor for the class Player
+Player::Player() {
+	this->name = '\0';
+	this->category = '\0';
+	this->runs = 0;
+	this->wickets = 0;
+}
+
+// wickets function
+void Player::addWickets() {
+	this->wickets += 1;
+}
+
+// runs adder function
+void Player::addRuns(int runs) {
+
+	this->runs += runs;
+}
 
 void Player::setName(string name) {
 	this->name = name;
