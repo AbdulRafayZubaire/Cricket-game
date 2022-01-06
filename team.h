@@ -20,13 +20,13 @@ private:
 public:
 
 	Team();
-	void setPlayers(int);
-	int getInnings();
+	void setPlayers(int, string);
+	string getInnings();
 	void swap(int, int);
 	void playingOrder();
 	void display();
 	void displaySquad();
-	bool gameToss(int, Team&);
+	void gameToss(int, Team&);
 	void setName(int);
 	string getName();
 	void addRuns(int);
@@ -41,6 +41,8 @@ Team::Team() {
 	totalRuns = 0;
 	wickets = 0;
 }
+
+
 
 //get wickets function
 int Team::getWickets() {
@@ -62,7 +64,7 @@ string Team::getName() {
 // get player reference function
 Player& Team::getPlayer(int num) {
 	
-	return this->beta[num];
+	return beta[num];
 }
 
 void Team::setName(int num) {
@@ -84,16 +86,13 @@ void Team::setName(int num) {
 }
 
 // setting Innings
-int Team::getInnings() {
-	if (this->firstIn == "Bat") {
-		return 1;
-	}
-	else
-		return 0;
+string Team::getInnings() {
+	
+		return firstIn;
 }
 
 // set player member function
-void Team::setPlayers(int t) {
+void Team::setPlayers(int t, string playing) {
 
 	int team = t;
 	char choice;
@@ -136,27 +135,40 @@ void Team::setPlayers(int t) {
 
 	cout << "Select Your final playing 11: " << endl;
 
-
 	int index = 0;
 	for (int i = 0; i < 11; i++)
 	{
-		cout << "Player " << i + 1 << ": ";
-		cin >> index;
 
-		// validation for repeated selection of a player
-		for (int j = 0; j < i; j++)
-		{
-			while (squad[index - 1].getName() == beta[j].getName()) {
-				cout << "\t\t\t!--WARNING--! -> You cannot select the same player twice" << endl;
-				cout << "Player " << i + 1 << ": ";
-				cin >> index;
+		// check  if the team selection is for User 
+		if (playing == "user") {
+			cout << "Player " << i + 1 << ": ";
+			cin >> index;
+
+			// validation for repeated selection of a player
+			for (int j = 0; j < i; j++)
+			{
+				while (squad[index - 1].getName() == beta[j].getName()) {
+					cout << "\t\t\t!--WARNING--! -> You cannot select the same player twice" << endl;
+					cout << "Player " << i + 1 << ": ";
+					cin >> index;
+				}
+
+
+			}
+
+
+			// shortlisting the playing 11 from the 16 member squad
+			beta[i] = squad[index - 1];
+
+			//cout << beta[i].getName() << endl;
+		}
+		else {
+
+			for (int i = 0; i < 11; i++) {
+				// shortlisting the playing 11 from the 16 member squad
+				beta[i] = squad[i];
 			}
 		}
-
-		// shortlisting the playing 11 from the 16 member squad
-		beta[i] = squad[index - 1];
-
-		//cout << beta[i].getName() << endl;
 	}
 
 	display();			// displaying the final 11
@@ -231,7 +243,7 @@ void Team::displaySquad() {
 }
 
 // TOSS
-bool Team::gameToss(int userToss, Team &comp) {
+void Team::gameToss(int userToss, Team &comp) {
 	srand(time(0));
 
 	int random = 1;/*rand() % 1;*/
@@ -252,21 +264,41 @@ bool Team::gameToss(int userToss, Team &comp) {
 		
 		cout << "Your choice";
 		cin >> choice;
+
+		while (choice != 1 && choice != 2) {
+			cout << "------- Invalid choice -------";
+			cout << "1. Bat\n2. Ball" << endl;
+			cin >> choice;
+		}
 		if (choice == 1) {
 			this->firstIn = "Bat";
 			this->secondIn = "Ball";
-		}
-		else{
 			comp.firstIn = "Ball";
 			comp.secondIn = "Bat";
+		}
+		else{
+			this->firstIn = "Ball";
+			this->secondIn = "Bat";
+			comp.firstIn = "Bat";
+			comp.secondIn = "Ball";
 		}
 	}
 	else {
 		cout << "Sorry, You lost the toss.. " << endl;
-
+		int random = rand() % 2;
+		if (random == 1) {
+			this->firstIn = "Bat";
+			this->secondIn = "Ball";
+			comp.firstIn = "Ball";
+			comp.secondIn = "Bat";
+		}
+		else {
+			this->firstIn = "Ball";
+			this->secondIn = "Bat";
+			comp.firstIn = "Bat";
+			comp.secondIn = "Ball";
+		}
 	}
-
-	return random;
 }
 
 void Team::addRuns(int runs) {
@@ -274,5 +306,5 @@ void Team::addRuns(int runs) {
 }
 
 void Team::addWicket() {
-	this->wickets = +1;
+	this->wickets = this->wickets + 1;
 }

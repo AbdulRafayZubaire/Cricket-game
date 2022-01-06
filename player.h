@@ -10,6 +10,7 @@ private:
 	string name;
 	string category;
 	int runs;
+	int bowlerRuns;
 	int wickets;
 
 public:
@@ -18,6 +19,8 @@ public:
 	void setCategory(string);
 	string getCategory();
 	void addRuns(int);
+	void addBowlerRuns(int);
+	int getBowlerRuns();
 	void addWickets();
 	Player();
 };
@@ -26,8 +29,16 @@ public:
 Player::Player() {
 	this->name = '\0';
 	this->category = '\0';
-	this->runs = 0;
-	this->wickets = 0;
+	this->runs = '\0';
+	this->wickets = '\0';
+}
+
+// Add Bowler Runs
+void Player::addBowlerRuns(int runs) {
+	this->bowlerRuns += runs;
+}
+int Player::getBowlerRuns() {
+	return this->bowlerRuns;
 }
 
 // wickets function
