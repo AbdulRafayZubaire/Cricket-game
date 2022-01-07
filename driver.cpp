@@ -11,7 +11,7 @@ string compBowl();
 string userBowl();
 int Bat(string, Team*, Team*, Player*, Player*);
 int compBat(string, Team*, Team*, Player*, Player*);
-bool displayScoreCard(Team*, Team*, Player*, Player*, float, int);
+bool displayScoreCard(Team*, Team*, Player*, Player*, int);
 int out(Team*);
 void teamSelection(Team&, Team&);
 void gameDecision(Team&, Team&);
@@ -20,166 +20,196 @@ void gameDecision(Team&, Team&);
 
 int main() {
 
-	Team alpha, comp;
-	Team *battingTeam = nullptr, *bowlingTeam = nullptr;
-	Player *batsman = nullptr, *bowler = nullptr;
-	string ball;
-	int overs = 0;
- 
-	
-	bool flag = 0;
-	do {
-		cout << "**Welcome**" << endl;
-		Sleep(1000);
-		int option;
-		cout << "Select an option(1-3): " << endl;
-		cout << "1. Play" << endl;
-		cout << "2. Rules" << endl;
-		cout << "3. Exit" << endl;
+	char play = '\0';
 
-		cout << "Your choice: ";
-		cin >> option;
-		while (option != 1 && option != 2 && option != 3) {
-			cout << "\t\t\t!--WARNING--! -> Select only between the given choices" << endl;
+	do {
+
+		Team alpha, comp;
+		Team* battingTeam = nullptr, * bowlingTeam = nullptr;
+		Player* batsman = nullptr, * bowler = nullptr;
+		string ball;
+		int overs = 0;
+
+
+		bool flag = 0;
+		do {
+			cout << "**Welcome**" << endl;
+			Sleep(1000);
+			int option;
+			cout << "Select an option(1-3): " << endl;
+			cout << "1. Play" << endl;
+			cout << "2. Rules" << endl;
+			cout << "3. Exit" << endl;
+
 			cout << "Your choice: ";
 			cin >> option;
-		}
-				
-		system("cls");								// clear terminal
+			while (option != 1 && option != 2 && option != 3) {
+				cout << "\t\t\t!--WARNING--! -> Select only between the given choices" << endl;
+				cout << "Your choice: ";
+				cin >> option;
+			}
 
-		switch (option) {
-		case 1: {
-			// Team selection
-			teamSelection(alpha, comp);	
+			system("cls");								// clear terminal
 
-			// Toss for the game
-			alpha.gameToss(comp);
+			switch (option) {
+			case 1: {
+				// Team selection
+				teamSelection(alpha, comp);
 
-			// overs decision
-			cout << "how many overs would you like to play: " << endl;
-			cin >> overs;
-			while (option < 1 || option > 10) {
-				cout << "\t\t\t!--WARNING--! -> Overs cannot be zero" << endl;
+				// Toss for the game
+				alpha.gameToss(comp);
+
+				cout << "Toss checking: " << alpha.getFirstInnings() << endl;
+				cout << "Toss checking: " << comp.getFirstInnings() << endl;
+
+				// overs decision
 				cout << "how many overs would you like to play: " << endl;
 				cin >> overs;
-			}
+				while (option < 1 || option > 10) {
+					cout << "\t\t\t!--WARNING--! -> Overs cannot be zero" << endl;
+					cout << "how many overs would you like to play: " << endl;
+					cin >> overs;
+				}
 
-			// --------------- Setting the Batting and Bowling pointers accordingly ------------- //
+				// --------------- Setting the Batting and Bowling pointers accordingly ------------- //
 
-			int in = 0;							// deals in changin the batting and bowling pointers
-			int proceed = 0;					// deals with no. of innings
-			bool value = false;
+				int in = 0;							// deals in changin the batting and bowling pointers
+				int proceed = 0;					// deals with no. of innings
+				bool value = false;
 
-			do {
-				proceed++;
+				do {
+					proceed++;
 
-				// Setting the pointer for first innings
-				if (in == 0) {
-					if (alpha.getFirstInnings() == "Bat") {		// if alpha chooses to bat			
-						
-						battingTeam = &alpha;				// setting the pointers according to the result of toss
-						bowlingTeam = &comp;
+					// Setting the pointer for first innings
+					if (in == 0) {
+						if (alpha.getFirstInnings() == "Bat") {		// if alpha chooses to bat			
+
+							battingTeam = &alpha;				// setting the pointers according to the result of toss
+							bowlingTeam = &comp;
+						}
+						else {
+
+							battingTeam = &comp;
+							bowlingTeam = &alpha;
+						}
 					}
+
+					// Setting the pointer for Second innings
 					else {
-						
-						battingTeam = &comp;
-						bowlingTeam = &alpha;
+						if (alpha.getFirstInnings() == "Bat") {		// if alpha chooses to bat			
+							battingTeam = &comp;
+							bowlingTeam = &alpha;
+						}
+						else {
+							battingTeam = &alpha;
+							bowlingTeam = &comp;
+						}
 					}
+
+
+					float ballsBowled = 0;
+					int wickets = 0;
+
+					for (int i = 0; i < (overs * 6); i++) {
+
+						// referencing to the current batsman and bowler
+						batsman = &(battingTeam->getPlayer(wickets));
+						bowler = &(bowlingTeam->getPlayer(ballsBowled / 6));
+
+						system("cls");													// clear screeen
+
+						// Current score Display Fuction
+						value = displayScoreCard(battingTeam, bowlingTeam, batsman, bowler, overs);			// value is a winning break
+
+						if (value) {
+							break;
+						}
+
+
+						if (battingTeam == &alpha) {
+
+							// calling the balling function
+							ball = compBowl();
+
+							// calling the batting function
+							wickets += Bat(ball, battingTeam, bowlingTeam, batsman, bowler);
+						}
+
+						else if (bowlingTeam == &alpha) {
+
+							ball = userBowl();
+							wickets += compBat(ball, battingTeam, bowlingTeam, batsman, bowler);
+
+						}
+
+						// incrementing the balls
+						ballsBowled++;
+
+					}
+
+					in++;
+
+				} while (proceed < 2);					// do while loop
+
+
+				// game decision
+				gameDecision(alpha, comp);
+
+				if (alpha.getWin() == 1 && comp.getWin() == 1) {
+					cout << "match Drawn" << endl;
 				}
-
-				// Setting the pointer for Second innings
-				else {
-					if (alpha.getFirstInnings() == "Bat") {		// if alpha chooses to bat			
-						battingTeam = &comp;
-						bowlingTeam = &alpha;
-					}
-					else{
-						battingTeam = &alpha;
-						bowlingTeam = &comp;
-					}
+				else if (alpha.getWin() == 1) {
+					cout << "Congratulations You won the game" << endl;
 				}
-
-
-				float ballsBowled = 0;
-				int wickets = 0;
-
-				for (int i = 0; i < (overs*6); i++) {
-
-					// referencing to the current batsman and bowler
-					batsman = &(battingTeam->getPlayer(wickets));
-					bowler = &(bowlingTeam->getPlayer(ballsBowled / 6));
-
-					system("cls");													// clear screeen
-
-					// Current score Display Fuction
-					value = displayScoreCard(battingTeam, bowlingTeam, batsman, bowler, ballsBowled, overs);			// value is a winning break
-
-					if (value) {
-						break;
-					}
-
-
-					if (battingTeam == &alpha) {
-
-						// calling the balling function
-						ball = compBowl();
-						
-						// calling the batting function
-						wickets += Bat(ball, battingTeam, bowlingTeam, batsman, bowler);
-					}
-
-					else if (bowlingTeam == &alpha) {
-
-						ball = userBowl();
-						wickets += compBat(ball, battingTeam, bowlingTeam, batsman, bowler);
-
-					}
-
-					// incrementing the balls
-					ballsBowled++;
-
+				else if (comp.getWin() == 1) {
+					cout << "You lost the game" << endl;
 				}
-
-				in++;
-
-			} while (proceed < 2);					// do while loop
-
-			if (alpha.getWin() == true) {
-				cout << "Congratulations You won the game" << endl;
+				break;
 			}
-			else {
-				cout << "You lost the game" << endl;
+
+
+				  // ------------------------------------------- RULES -----------------------------------------
+			case 2: {
+
+				// Rules reading from the file
+				char choice;
+				string line;
+
+				fstream file;
+				file.open("Rules.txt", ios::in);
+
+				if (file.is_open()) {
+					while (getline(file, line)) {												// file reading
+						cout << line << endl;
+
+					}
+				}
+				file.close();
+
+				break;
 			}
+
+				  // ------------------------------------------- QUIT ------------------------------------------
+			case 3: {
+				cout << "Thank you" << endl;
+				break;
+			}
+			}
+
+
+		} while (flag);
+
+
+
+
+		cout << "Do you want to play Again. ?";
+		cin >> play;
+		while (play != 'y' && play != 'Y' && play != 'N' && play != 'n') {
+			cout << "\t\t\t!--WARNING--! -> Invalid Input .." << endl;
+			cout << "Do you want to play Again. ?";
+			cin >> play;
 		}
-
-
-// ------------------------------------------- RULES -----------------------------------------
-		case 2: {
-
-		
-		
-		}
-
-// ------------------------------------------- QUIT ------------------------------------------
-		case 3: {
-			cout << "Thank you" << endl;
-			break;
-		}
-		}
-
-
-	} while (flag);
-
-
-
-
-
-
-
-
-
-
-
+	}while (play == 'y' || play == 'Y');
 
 	system("pause");
 	return 0;
@@ -504,17 +534,24 @@ int out(Team *battingTeam)
 }
 
 // Display innings Function
-bool displayScoreCard(Team* battingTeam, Team* bowlingTeam, Player* batsman, Player* bowler, float balls, int num) {
+bool displayScoreCard(Team* battingTeam, Team* bowlingTeam, Player* batsman, Player* bowler, int num) {
 
 // ------------------------
 	static int count = 0;
+		//count = 0;
 	static int overs = 0;
 // ----------------------------------------------------
 
 	if (count >= num * 6) {
 		cout << "TARGET: " << bowlingTeam->getRuns();
-		overs = 0;
+		
+		if (count == num * 6)							// for the sake of maintaining overs in 2nd innings
+			overs = 0;
+
 		if (battingTeam->getRuns() > bowlingTeam->getRuns() && battingTeam->getWickets() != 10) {
+			return 1;
+		}
+		else if(battingTeam->getRuns() < bowlingTeam->getRuns() && battingTeam->getWickets() == 10) {
 			return 1;
 		}
 	}
@@ -522,7 +559,7 @@ bool displayScoreCard(Team* battingTeam, Team* bowlingTeam, Player* batsman, Pla
 		cout << "TARGET: _____";
 // ----------------------------------------------------
 
-	cout << "\t\t\t\t\t\t\t\t\t\t\t\t\t" << "overs: " << (overs /6) << "." << (overs % 6) << endl;
+	cout << "\t\t\t\t\t\t\t\t\t" << "overs: " << (overs /6) << "." << (overs % 6) << endl;
 
 // ----------------------------------------------------
 
@@ -550,31 +587,44 @@ bool displayScoreCard(Team* battingTeam, Team* bowlingTeam, Player* batsman, Pla
 void gameDecision(Team &alpha, Team &comp) {
 
 	if (alpha.getFirstInnings() == "Bat") {
-		if (comp.getWickets() == 10) {
-			comp.setWin(false);
-			alpha.setWin(true);
-		}
-		else if (comp.getRuns() < alpha.getRuns()) {
-			comp.setWin(false);
-			alpha.setWin(true);
-		}
-		else
-			comp.setWin(true);
-			alpha.setWin(false);
-	}
 
-	else {
 		if (alpha.getWickets() == 10) {
-			comp.setWin(true);
-			alpha.setWin(false);
+			alpha.setWin(1);
+			comp.setWin(0);
+		}
+
+		else if (comp.getRuns() < alpha.getRuns()) {
+			comp.setWin(0);
+			alpha.setWin(1);
+		}
+
+		else if (comp.getRuns() == alpha.getRuns()) {
+			comp.setWin(1);
+			alpha.setWin(1);
+		}
+
+		else {
+			comp.setWin(1);
+			alpha.setWin(0);
+		}
+	}
+	
+	else {
+		if (comp.getWickets() == 10) {
+			comp.setWin(1);
+			alpha.setWin(0);
 		}
 		else if (alpha.getRuns() < comp.getRuns()) {
-			comp.setWin(true);
-			alpha.setWin(false);
+			comp.setWin(1);
+			alpha.setWin(0);
+		}
+		else if (comp.getRuns() == alpha.getRuns()) {
+			comp.setWin(1);
+			alpha.setWin(1);
 		}
 		else {
-			comp.setWin(false);
-			alpha.setWin(true);
+			alpha.setWin(1);
+			comp.setWin(0);
 		}
 	}
 }

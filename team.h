@@ -13,10 +13,10 @@ private:
 	int totalRuns;
 	int wickets;
 	//int overs;
-	bool toss;
+	int toss;
 	string firstIn;
 	string secondIn;
-	bool win;
+	int win;
 
 
 public:
@@ -37,26 +37,31 @@ public:
 	int getWickets();
 	Player& getPlayer(int);
 	int getRuns();
-	void setWin(bool);
-	bool getWin();
+	void setWin(int);
+	int getWin();
 };
 
 // constructor for the class Team
 Team::Team() {
-	totalRuns = 0;
-	wickets = 0;
+	totalRuns = '\0';
+	wickets = '\0';
+	toss = '\0';
+	firstIn = '\0';
+	secondIn = '\0';
+	win = '\0';
+	name = '\0';
 }
 
 // set win
-void Team::setWin(bool decision) {
+void Team::setWin(int decision) {
 
 	this->win = decision;
 }
 
 // get Win
-bool Team::getWin() {
+int Team::getWin() {
 
-	return win;
+	return this->win;
 }
 
 //get wickets function
@@ -296,12 +301,16 @@ void Team::gameToss(Team &comp) {
 	
 	system("cls");
 
-	bool userToss;
+	int userToss;
 	cout << "Heads or Tails ?" << endl;
 	cout << "1. Heads" << endl;
 	cout << "2. Tails" << endl;
 	cout << "Enter your choice: ";
 	cin >> userToss;
+	while (userToss != 0 && userToss != 1) {
+		cout << "\t\t\t!--WARNING--! -> Choose between (1) and (2) only " << endl;
+		cin >> userToss;
+	}
 
 
 	int random = 1;/*rand() % 1;*/
