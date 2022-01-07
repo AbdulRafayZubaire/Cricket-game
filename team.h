@@ -23,7 +23,7 @@ public:
 
 	Team();
 	void setPlayers(int, string);
-	string getInnings();
+	string getFirstInnings();
 	void swap(int, int);
 	void playingOrder();
 	void display();
@@ -101,7 +101,7 @@ void Team::setName(int num) {
 }
 
 // setting Innings
-string Team::getInnings() {
+string Team::getFirstInnings() {
 	
 		return firstIn;
 }
@@ -121,7 +121,7 @@ void Team::setPlayers(int t, string playing) {
 	int count = 0;
 
 	if (file.is_open()) {
-		while (getline(file, line)) {
+		while (getline(file, line)) {												// file reading
 			if (count >= limit && count < (limit + 16)) {
 
 				if (playing == "user") {
@@ -157,10 +157,16 @@ void Team::setPlayers(int t, string playing) {
 	for (int i = 0; i < 11; i++)
 	{
 
-		// check  if the team selection is for User 
+		// check statement if the team selection is for User 
 		if (playing == "user") {
 			cout << "Player " << i + 1 << ": ";
 			cin >> index;
+
+			while (index < 1 || index > 16) {
+				cout << "\t\t\t!--WARNING--! -> Select the players only between (1 - 16)" << endl;
+				cout << "Player " << i + 1 << ": ";
+				cin >> index;
+			}
 
 			// validation for repeated selection of a player
 			for (int j = 0; j < i; j++)
@@ -210,6 +216,11 @@ void Team::setPlayers(int t, string playing) {
 				display();
 				cout << "Do you want to modify the batting order again (Y/N)? : ";
 				cin >> choice;
+				while (choice != 'y' && choice != 'Y' && choice != 'N' && choice != 'n') {
+					cout << "------- Invalid choice -------";
+					cout << "Do you want to modify the batting order (Y/N)? : ";
+					cin >> choice;
+				}
 			}
 
 			system("cls");
@@ -229,8 +240,20 @@ void Team::playingOrder() {
 
 	cout << "Enter the player ID you want to switch: ";
 	cin >> id;
+	while (id < 0 && id > 11) {
+		cout << "\t\t\t!--WARNING--! -> Select only between (1 - 11) " << endl;
+		cout << "Enter the player ID you want to switch: ";
+		cin >> id;
+	}
+
 	cout << "Enter the position you want to switch with: ";
 	cin >> place;
+	while (id < 0 && id > 11) {
+		cout << "Enter the position you want to switch with: ";
+		cout << "Enter the player ID you want to switch: ";
+		cin >> place;
+	}
+
 
 	// players swapping function called 
 	swap(id, place);
