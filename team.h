@@ -2,6 +2,7 @@
 #include "player.h"
 #include <time.h>
 #include <iomanip>
+#include <conio.h>
 
 
 class Team {
@@ -15,6 +16,7 @@ private:
 	bool toss;
 	string firstIn;
 	string secondIn;
+	bool win;
 
 
 public:
@@ -26,7 +28,8 @@ public:
 	void playingOrder();
 	void display();
 	void displaySquad();
-	void gameToss(int, Team&);
+	void gameToss(Team&);
+	//string getToss();
 	void setName(int);
 	string getName();
 	void addRuns(int);
@@ -34,6 +37,8 @@ public:
 	int getWickets();
 	Player& getPlayer(int);
 	int getRuns();
+	void setWin(bool);
+	bool getWin();
 };
 
 // constructor for the class Team
@@ -42,7 +47,17 @@ Team::Team() {
 	wickets = 0;
 }
 
+// set win
+void Team::setWin(bool decision) {
 
+	this->win = decision;
+}
+
+// get Win
+bool Team::getWin() {
+
+	return win;
+}
 
 //get wickets function
 int Team::getWickets() {
@@ -108,7 +123,10 @@ void Team::setPlayers(int t, string playing) {
 	if (file.is_open()) {
 		while (getline(file, line)) {
 			if (count >= limit && count < (limit + 16)) {
-				cout << i + 1 << ". " << line << endl;
+
+				if (playing == "user") {
+					cout << i + 1 << ". " << line << endl;
+				}
 
 				//name assignation
 				squad[i].setName(line);
@@ -155,14 +173,12 @@ void Team::setPlayers(int t, string playing) {
 
 
 			}
-
-
 			// shortlisting the playing 11 from the 16 member squad
 			beta[i] = squad[index - 1];
 
 			//cout << beta[i].getName() << endl;
 		}
-		else {
+		else {										// computer team auto selection
 
 			for (int i = 0; i < 11; i++) {
 				// shortlisting the playing 11 from the 16 member squad
@@ -171,29 +187,35 @@ void Team::setPlayers(int t, string playing) {
 		}
 	}
 
-	display();			// displaying the final 11
+	cout << "here is you selected 11 player team" << endl;
+	this->display();			// displaying the final 11
 
-	cout << "Do you want to modify the batting order (Y/N)? : ";
-	cin >> choice;
-	do {
-
-		while (choice != 'y' && choice != 'Y' && choice != 'N' && choice != 'n') {
-			cout << "------- Invalid choice -------";
-			cout << "Do you want to modify the batting order (Y/N)? : ";
-			cin >> choice;
-		}
-
-		if (choice == 'y' || choice == 'Y') {
-
-			// function calling for adjusting the playing order
-			playingOrder();
-		}
-
-		//display();
-
-		cout << "Do you want to modify the batting order again (Y/N)? : ";
+	if (playing == "user") {
+		cout << "Do you want to modify the batting order (Y/N)? : ";
 		cin >> choice;
-	} while (choice == 'y' || choice == 'Y');
+		do {
+
+			while (choice != 'y' && choice != 'Y' && choice != 'N' && choice != 'n') {
+				cout << "------- Invalid choice -------";
+				cout << "Do you want to modify the batting order (Y/N)? : ";
+				cin >> choice;
+			}
+
+			if (choice == 'y' || choice == 'Y') {
+
+				// function calling for adjusting the playing order
+				playingOrder();
+
+				cout << "Here is your modified playing order: " << endl;
+				display();
+				cout << "Do you want to modify the batting order again (Y/N)? : ";
+				cin >> choice;
+			}
+
+			system("cls");
+
+		} while (choice == 'y' || choice == 'Y');
+	}
 }
 
 
@@ -243,8 +265,21 @@ void Team::displaySquad() {
 }
 
 // TOSS
-void Team::gameToss(int userToss, Team &comp) {
+void Team::gameToss(Team &comp) {
 	srand(time(0));
+	
+	cout << "press Enter to go for the Toss: " << endl;
+	_getch();
+	
+	system("cls");
+
+	bool userToss;
+	cout << "Heads or Tails ?" << endl;
+	cout << "1. Heads" << endl;
+	cout << "2. Tails" << endl;
+	cout << "Enter your choice: ";
+	cin >> userToss;
+
 
 	int random = 1;/*rand() % 1;*/
 	cout << random;

@@ -1,0 +1,7 @@
+1.	Game comprises of at least one inning where each team will take turn in batting bowling.
+2.	The aim of the game is to score as many runs as possible before the fielding team takes 10 wickets .the team with the most runs wins.
+3.	If you throw ball and its distance is less than the distance of pitch then it is no ball
+4.	If you throw ball and it is out of the width  of the pitch then it is declared as width ball
+5.	If you throw ball’s height is greater then he fixed height then it is declared as bouncer. 
+6.	If your score is greater than the opponent then you win the game else lose it.
+7.	If both scores are equal then it is draw 

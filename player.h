@@ -19,9 +19,11 @@ public:
 	void setCategory(string);
 	string getCategory();
 	void addRuns(int);
+	int getRuns();
 	void addBowlerRuns(int);
 	int getBowlerRuns();
 	void addWickets();
+	int getWickets();
 	Player();
 };
 
@@ -31,13 +33,16 @@ Player::Player() {
 	this->category = '\0';
 	this->runs = '\0';
 	this->wickets = '\0';
+	this->bowlerRuns = '\0';
 }
 
 // Add Bowler Runs
 void Player::addBowlerRuns(int runs) {
+
 	this->bowlerRuns += runs;
 }
 int Player::getBowlerRuns() {
+
 	return this->bowlerRuns;
 }
 
@@ -46,12 +51,26 @@ void Player::addWickets() {
 	this->wickets += 1;
 }
 
+// get wickets function
+int Player::getWickets() {
+
+	return this->wickets;
+}
+
+
 // runs adder function
 void Player::addRuns(int runs) {
 
 	this->runs += runs;
 }
 
+// runs getter
+int Player::getRuns() {
+
+	return this->runs;
+}
+
+// set name for player
 void Player::setName(string name) {
 	this->name = name;
 }
