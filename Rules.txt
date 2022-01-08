@@ -11,10 +11,11 @@
 9. Now the game starts here.
 10. In batting you will have two options, either to STRIKE the ball or to LEAVE it.
 11. If you leave the ball you will not be awarded with any run.
-12. If you Strike the ball you will be given RUNS depending on how the opponent bowled the delivery.
+12. If you STRIKE the ball you will be given RUNS depending on how the opponent bowled the delivery.
+13. If you didnt strike on the NORMAL delivery you will be given out
 
-13. If you didnt strike on the NORMAL delivery you will be given out   
- 
+14. After the completion of both innings the decision will be made of winning or losing.   
+
 
 
 

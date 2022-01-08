@@ -197,7 +197,7 @@ void Team::setPlayers(int t, string playing) {
 			}
 		}
 	}
-
+	system("cls");
 	cout << "here is you selected 11 player team" << endl;
 	this->display();			// displaying the final 11
 
@@ -296,7 +296,7 @@ void Team::displaySquad() {
 void Team::gameToss(Team &comp) {
 	srand(time(0));
 	
-	cout << "press Enter to go for the Toss: " << endl;
+	cout << "\npress Enter to go for the Toss: " << endl;
 	_getch();
 	
 	system("cls");
@@ -307,29 +307,24 @@ void Team::gameToss(Team &comp) {
 	cout << "2. Tails" << endl;
 	cout << "Enter your choice: ";
 	cin >> userToss;
-	while (userToss != 0 && userToss != 1) {
+	while (userToss != 1 && userToss != 2) {
 		cout << "\t\t\t!--WARNING--! -> Choose between (1) and (2) only " << endl;
 		cin >> userToss;
 	}
 
+	system("cls");
 
-	int random = 1;/*rand() % 1;*/
-	cout << random;
+	int random = 1 + rand() % 2;			// random function for the toss
+	if (userToss == random) {
 
-	if (random == 0) {
-		this->toss = 0;
-		comp.toss = 1;
-	}
-	else
-		this->toss = 1;
+		this->toss = 1;											//setting the toss attribute to either true or false
 		comp.toss = 0;
 
-	if (userToss == this->toss) {
 		int choice;
 		cout << "Congratulations! You won the toss.. Would you like to bat or bowl ? " << endl;
 		cout << "1. Bat\n2. Ball" << endl;
 		
-		cout << "Your choice";
+		cout << "Your choice: ";
 		cin >> choice;
 
 		while (choice != 1 && choice != 2) {
@@ -337,13 +332,20 @@ void Team::gameToss(Team &comp) {
 			cout << "1. Bat\n2. Ball" << endl;
 			cin >> choice;
 		}
+
+		system("cls");
+
 		if (choice == 1) {
+			cout << "You have selected to Bat First" << endl << endl;
+
 			this->firstIn = "Bat";
 			this->secondIn = "Ball";
 			comp.firstIn = "Ball";
 			comp.secondIn = "Bat";
 		}
 		else{
+			cout << "You have selected to Ball First" << endl << endl;
+
 			this->firstIn = "Ball";
 			this->secondIn = "Bat";
 			comp.firstIn = "Bat";
@@ -351,15 +353,24 @@ void Team::gameToss(Team &comp) {
 		}
 	}
 	else {
+
+		this->toss = 0;											//setting the toss attribute to either true or false
+		comp.toss = 1;
+
 		cout << "Sorry, You lost the toss.. " << endl;
 		int random = rand() % 2;
+		
 		if (random == 1) {
+			cout << "The opponent has selected to Ball First" << endl << endl;
+
 			this->firstIn = "Bat";
 			this->secondIn = "Ball";
 			comp.firstIn = "Ball";
 			comp.secondIn = "Bat";
 		}
 		else {
+			cout << "The opponent has selected to Bat First" << endl << endl;
+
 			this->firstIn = "Ball";
 			this->secondIn = "Bat";
 			comp.firstIn = "Bat";

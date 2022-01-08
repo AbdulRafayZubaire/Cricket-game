@@ -15,14 +15,13 @@ bool displayScoreCard(Team*, Team*, Player*, Player*, int);
 int out(Team*);
 void teamSelection(Team&, Team&);
 void gameDecision(Team&, Team&);
+void pointerSetter(int, Team&, Team&, Team* &, Team* &);
 //-----------------------------------------------------------------------------------
 
 
 int main() {
 
-	char play = '\0';
-
-	do {
+	//char play = '\0';
 
 		Team alpha, comp;
 		Team* battingTeam = nullptr, * bowlingTeam = nullptr;
@@ -33,8 +32,8 @@ int main() {
 
 		bool flag = 0;
 		do {
-			cout << "**Welcome**" << endl;
-			Sleep(1000);
+			cout << "*************** ----- <        WELCOME        > ------ ****************" << endl << endl;
+		
 			int option;
 			cout << "Select an option(1-3): " << endl;
 			cout << "1. Play" << endl;
@@ -59,8 +58,7 @@ int main() {
 				// Toss for the game
 				alpha.gameToss(comp);
 
-				cout << "Toss checking: " << alpha.getFirstInnings() << endl;
-				cout << "Toss checking: " << comp.getFirstInnings() << endl;
+				system("cls");					// clear screen
 
 				// overs decision
 				cout << "how many overs would you like to play: " << endl;
@@ -71,52 +69,35 @@ int main() {
 					cin >> overs;
 				}
 
-				// --------------- Setting the Batting and Bowling pointers accordingly ------------- //
+				// ------------------------- Setting the Batting and Bowling pointers accordingly ------------------------- //
 
-				int in = 0;							// deals in changin the batting and bowling pointers
-				int proceed = 0;					// deals with no. of innings
+				int inningsChanger = 0;							// deals in changin the batting and bowling pointers
+				int proceed = 0;								// deals with no. of innings
 				bool value = false;
 
 				do {
 					proceed++;
 
-					// Setting the pointer for first innings
-					if (in == 0) {
-						if (alpha.getFirstInnings() == "Bat") {		// if alpha chooses to bat			
+					//Setting the pointers of batting and bowling team respectively
+					pointerSetter(inningsChanger, alpha, comp, battingTeam, bowlingTeam);
 
-							battingTeam = &alpha;				// setting the pointers according to the result of toss
-							bowlingTeam = &comp;
-						}
-						else {
-
-							battingTeam = &comp;
-							bowlingTeam = &alpha;
-						}
-					}
-
-					// Setting the pointer for Second innings
-					else {
-						if (alpha.getFirstInnings() == "Bat") {		// if alpha chooses to bat			
-							battingTeam = &comp;
-							bowlingTeam = &alpha;
-						}
-						else {
-							battingTeam = &alpha;
-							bowlingTeam = &comp;
-						}
-					}
-
-
-					float ballsBowled = 0;
-					int wickets = 0;
+					int ballsBowled = 0;							// For the sake of changing the Bowler
+					int wickets = 0;								// For the sake of changing the Batsman
+					int bowlerNumber = 10;
 
 					for (int i = 0; i < (overs * 6); i++) {
 
-						// referencing to the current batsman and bowler
+						// setting the reference to the curerent Batsman
 						batsman = &(battingTeam->getPlayer(wickets));
-						bowler = &(bowlingTeam->getPlayer(ballsBowled / 6));
 
-						system("cls");													// clear screeen
+						// setting the reference to the curerent Bowler
+						if (ballsBowled % 6 == 0) {
+							bowler = &(bowlingTeam->getPlayer(bowlerNumber));
+							bowlerNumber--;
+						}
+						
+						// clear screeen
+						system("cls");
 
 						// Current score Display Fuction
 						value = displayScoreCard(battingTeam, bowlingTeam, batsman, bowler, overs);			// value is a winning break
@@ -147,7 +128,7 @@ int main() {
 
 					}
 
-					in++;
+					inningsChanger++;
 
 				} while (proceed < 2);					// do while loop
 
@@ -199,22 +180,24 @@ int main() {
 
 		} while (flag);
 
+		// clear screen
+			system("cls");
 
-
-
-		cout << "Do you want to play Again. ?";
-		cin >> play;
-		while (play != 'y' && play != 'Y' && play != 'N' && play != 'n') {
-			cout << "\t\t\t!--WARNING--! -> Invalid Input .." << endl;
-			cout << "Do you want to play Again. ?";
-			cin >> play;
-		}
-	}while (play == 'y' || play == 'Y');
+// ----------------------------------------------------- Game Finishes --------------------------------------------------------
+	//	cout << "Do you want to play Again. ?";
+	//	cin >> play;
+	//	while (play != 'y' && play != 'Y' && play != 'N' && play != 'n') {
+	//		cout << "\t\t\t!--WARNING--! -> Invalid Input .." << endl;
+	//		cout << "Do you want to play Again. ?";
+	//		cin >> play;
+	//	}
+	//}while (play == 'y' || play == 'Y');
 
 	system("pause");
 	return 0;
 }
 
+// ---------------------------------------------- Function Definitions ----------------------------------------------------
 
 // team selection
 void teamSelection(Team &alpha, Team &comp) {
@@ -489,7 +472,7 @@ string userBowl() {
 	cout << "------------------------ Now Bowling -------------------------------" << endl << endl;
 
 	cout << "-----------------------Choose Carefully-----------------------------" << endl<< endl;
-	cout << "-----------Distance:	-- > keep your Distance behind 20" << endl;
+	cout << "-----------Distance:		-- > keep your Distance above 20" << endl;
 	cout << "-----------Width:		-- > For wider delivery bowl above (10)" << endl;
 	cout << "-----------height:		-- > For Bouncer above (10)" << endl;
 	cout << "-----------angle:		-- > For Spin -> (85 > spin > 95)" << endl;
@@ -538,7 +521,6 @@ bool displayScoreCard(Team* battingTeam, Team* bowlingTeam, Player* batsman, Pla
 
 // ------------------------
 	static int count = 0;
-		//count = 0;
 	static int overs = 0;
 // ----------------------------------------------------
 
@@ -557,24 +539,26 @@ bool displayScoreCard(Team* battingTeam, Team* bowlingTeam, Player* batsman, Pla
 	}
 	else
 		cout << "TARGET: _____";
-// ----------------------------------------------------
-
-	cout << "\t\t\t\t\t\t\t\t\t" << "overs: " << (overs /6) << "." << (overs % 6) << endl;
 
 // ----------------------------------------------------
+	cout << "\t\t\t\t\t\t\t" << "overs: " << (overs /6) << "." << (overs % 6) << endl;
+// ----------------------------------------------------
+
 
 	cout << "------------------------------- Score Card -------------------------------------" << endl;
 
-	cout << "BattingTeam: " << battingTeam->getName() << "\t\t\t\t\t\t\t" << "Batsman: " << batsman->getName() << endl;
-	cout << "BowlingTeam: " << bowlingTeam->getName() << "\t\t\t\t\t\t\t" << "Bowler: " << bowler->getName() << endl << endl << endl;
+	cout << "BattingTeam: " << battingTeam->getName() << "\t\t\t\t\t\t" << "Batsman: " << batsman->getName() << endl;
+	cout << "BowlingTeam: " << bowlingTeam->getName() << "\t\t\t\t\t\t" << "Bowler: " << bowler->getName() << endl << endl << endl << endl << endl;
 
 
 
 	cout << battingTeam->getName() << ": (" << battingTeam->getRuns() << " | " << battingTeam->getWickets() << ")" << endl;
+	cout << "------------------------------------------------------------------------------------" << endl;
 	cout << batsman->getName() << ": "<< batsman->getRuns() << "\t\t\t\t\t\t\t" << bowler->getName() << ": (" << bowler->getBowlerRuns() << "/" << bowler->getWickets() << ")" << endl;
-	
-	cout << endl << endl << endl;
-	cout << "--------------------------------------------------------------------------------" << endl;
+	cout << "------------------------------------------------------------------------------------" << endl << endl << endl;
+
+
+
 	
 // --------------
 	count++;
@@ -629,3 +613,31 @@ void gameDecision(Team &alpha, Team &comp) {
 	}
 }
 
+void pointerSetter(int inningsChanger, Team &alpha, Team &comp, Team* &battingTeam, Team* &bowlingTeam) {
+
+	// Setting the pointer for first innings
+	if (inningsChanger == 0) {
+		if (alpha.getFirstInnings() == "Bat") {		// if alpha chooses to bat			
+
+			battingTeam = &alpha;				// setting the pointers according to the result of toss
+			bowlingTeam = &comp;
+		}
+		else {
+
+			battingTeam = &comp;
+			bowlingTeam = &alpha;
+		}
+	}
+
+	// Setting the pointer for Second innings
+	else {
+		if (alpha.getFirstInnings() == "Bat") {		// if alpha chooses to bat			
+			battingTeam = &comp;
+			bowlingTeam = &alpha;
+		}
+		else {
+			battingTeam = &alpha;
+			bowlingTeam = &comp;
+		}
+	}
+}
