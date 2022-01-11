@@ -9,13 +9,14 @@ bool isStrike();
 int userStrike();
 string compBowl();
 string userBowl();
-int Bat(string, Team*, Team*, Player*, Player*);
-int compBat(string, Team*, Team*, Player*, Player*);
-bool displayScoreCard(Team*, Team*, Player*, Player*, int);
-int out(Team*);
+int Bat(string, Team* &, Team* &, Player* &, Player* &);
+int compBat(string, Team* &, Team* &, Player* &, Player* &);
+void displayScoreCard(Team* &, Team* &, Player* &, Player* &);
+int out(Team* &);
 void teamSelection(Team&, Team&);
 void gameDecision(Team&, Team&);
 void pointerSetter(int, Team&, Team&, Team* &, Team* &);
+void finalScoreCard(Team&, Team&);
 //-----------------------------------------------------------------------------------
 
 
@@ -58,7 +59,6 @@ int main() {
 				// Toss for the game
 				alpha.gameToss(comp);
 
-				system("cls");					// clear screen
 
 				// overs decision
 				cout << "how many overs would you like to play: " << endl;
@@ -69,11 +69,10 @@ int main() {
 					cin >> overs;
 				}
 
-				// ------------------------- Setting the Batting and Bowling pointers accordingly ------------------------- //
+	// ------------------------- Setting the Batting and Bowling pointers accordingly ------------------------- //
 
 				int inningsChanger = 0;							// deals in changin the batting and bowling pointers
 				int proceed = 0;								// deals with no. of innings
-				bool value = false;
 
 				do {
 					proceed++;
@@ -99,25 +98,42 @@ int main() {
 						// clear screeen
 						system("cls");
 
-						// Current score Display Fuction
-						value = displayScoreCard(battingTeam, bowlingTeam, batsman, bowler, overs);			// value is a winning break
+	// --------------------------------------- Breaking Points ---------------------------------------------------------------------
 
-						if (value) {
+						if (inningsChanger) {
+							cout << "TARGET: " << bowlingTeam->getRuns();
+
+							if (battingTeam->getRuns() > bowlingTeam->getRuns()) {
+								break;
+							}
+							else if (battingTeam->getWickets() == 10) {
+								break;
+							}
+						}
+						else {
+							cout << "TARGET: _____";
+						}
+
+						if (battingTeam->getWickets() == 10) {
 							break;
 						}
+
+	 // ---------------------------------------------------------------------------------------------------------------------------
+
+						// Current score Display Fuction
+						displayScoreCard(battingTeam, bowlingTeam, batsman, bowler);				
 
 
 						if (battingTeam == &alpha) {
 
-							// calling the balling function
+							// calling the balling function and batting functions
 							ball = compBowl();
-
-							// calling the batting function
 							wickets += Bat(ball, battingTeam, bowlingTeam, batsman, bowler);
 						}
 
 						else if (bowlingTeam == &alpha) {
 
+							// calling the balling function and batting functions
 							ball = userBowl();
 							wickets += compBat(ball, battingTeam, bowlingTeam, batsman, bowler);
 
@@ -136,6 +152,9 @@ int main() {
 				// game decision
 				gameDecision(alpha, comp);
 
+				// screen clear
+				system("cls");
+
 				if (alpha.getWin() == 1 && comp.getWin() == 1) {
 					cout << "match Drawn" << endl;
 				}
@@ -149,7 +168,7 @@ int main() {
 			}
 
 
-				  // ------------------------------------------- RULES -----------------------------------------
+// ------------------------------------------- RULES -----------------------------------------
 			case 2: {
 
 				// Rules reading from the file
@@ -170,7 +189,7 @@ int main() {
 				break;
 			}
 
-				  // ------------------------------------------- QUIT ------------------------------------------
+// ------------------------------------------- QUIT ------------------------------------------
 			case 3: {
 				cout << "Thank you" << endl;
 				break;
@@ -180,8 +199,9 @@ int main() {
 
 		} while (flag);
 
+		finalScoreCard(alpha, comp);
+
 		// clear screen
-			system("cls");
 
 // ----------------------------------------------------- Game Finishes --------------------------------------------------------
 	//	cout << "Do you want to play Again. ?";
@@ -272,7 +292,7 @@ int userStrike(){
 }
 
 // Automatic Batting Function
-int compBat(string ball, Team* battingTeam, Team* bowlingTeam, Player* batsman, Player* bowler) {
+int compBat(string ball, Team* &battingTeam, Team* &bowlingTeam, Player* &batsman, Player* &bowler) {
 
 	if (isStrike()) {
 
@@ -280,9 +300,11 @@ int compBat(string ball, Team* battingTeam, Team* bowlingTeam, Player* batsman, 
 			if (out(battingTeam)) {
 
 				bowler->addWickets();
+				batsman->addRuns(0);
 				battingTeam->addWicket();
 
 				cout << " ! ------------------- OUT --------------------!" << endl;
+				Sleep(1000);
 
 				return 1;
 			}
@@ -294,6 +316,8 @@ int compBat(string ball, Team* battingTeam, Team* bowlingTeam, Player* batsman, 
 			bowler->addBowlerRuns(6);
 
 			cout << "*** ----------------- It's a SIXER ----------------- ***" << endl;
+			Sleep(1000);
+			
 			return 0;
 		}
 
@@ -306,6 +330,8 @@ int compBat(string ball, Team* battingTeam, Team* bowlingTeam, Player* batsman, 
 			bowler->addBowlerRuns(boundary[random]);
 
 			cout << "*** ----------------- It's a (" << boundary[random] << ") ---------------- - ***" << endl;
+			Sleep(1000);
+			
 			return 0;
 		}
 		else if (ball == "wide") {			// wide
@@ -315,6 +341,7 @@ int compBat(string ball, Team* battingTeam, Team* bowlingTeam, Player* batsman, 
 
 			cout << "*** ----------------- It's a SIXER ----------------- ***" << endl;
 			Sleep(1000);
+			
 			return 0;
 		}
 		else if (ball == "spin") {			// spin
@@ -327,6 +354,7 @@ int compBat(string ball, Team* battingTeam, Team* bowlingTeam, Player* batsman, 
 
 			cout << "*** ----------------- It's a (" << score[random] << ") ---------------- - ***" << endl;
 			Sleep(1000);
+			
 			return 0;
 		}
 		else {
@@ -339,6 +367,7 @@ int compBat(string ball, Team* battingTeam, Team* bowlingTeam, Player* batsman, 
 
 			cout << "*** ----------------- It's a (" << score[random] << ") ---------------- - ***" << endl;
 			Sleep(1000);
+			
 			return 0;
 		}
 	}
@@ -346,10 +375,12 @@ int compBat(string ball, Team* battingTeam, Team* bowlingTeam, Player* batsman, 
 		if (ball == "normal") {											// if computer does not strike
 
 			bowler->addWickets();
+			batsman->addRuns(0);
 			battingTeam->addWicket();
 
 			cout << " ! ------------------- OUT --------------------!" << endl;
 			Sleep(1000);
+			
 			return 1;
 		}
 		else
@@ -357,7 +388,7 @@ int compBat(string ball, Team* battingTeam, Team* bowlingTeam, Player* batsman, 
 	}
 }
 
-int Bat(string ball, Team *battingTeam, Team *bowlingTeam, Player *batsman, Player *bowler) {
+int Bat(string ball, Team* &battingTeam, Team* &bowlingTeam, Player* &batsman, Player* &bowler) {
 
 	
 		if (userStrike() == 1) {
@@ -366,6 +397,7 @@ int Bat(string ball, Team *battingTeam, Team *bowlingTeam, Player *batsman, Play
 				if (out(battingTeam)) {
 
 					bowler->addWickets();
+					batsman->addRuns(0);
 					battingTeam->addWicket();
 
 					cout << " ! ------------------- OUT --------------------!" << endl;
@@ -437,6 +469,7 @@ int Bat(string ball, Team *battingTeam, Team *bowlingTeam, Player *batsman, Play
 			if (ball == "normal") {
 
 				bowler->addWickets();
+				batsman->addRuns(0);
 				battingTeam->addWicket();
 
 				cout << " ! ------------------- OUT --------------------!" << endl;
@@ -448,17 +481,19 @@ int Bat(string ball, Team *battingTeam, Team *bowlingTeam, Player *batsman, Play
 		}
 }
 
-// bowling function
+// -------------------------------------------- bowling function ---------------------------------------
 string compBowl() {
 
-	string bowl[7] = { "bouncer", "noBall", "wide", "spin" , "normal", "normal" , "normal" };
+	string bowl[8] = { "bouncer", "noBall", "wide", "spin", "spin" , "normal", "normal" , "normal" };
 
-	int random = rand() % 7;
+	int random = rand() % 8;
 
 	return bowl[random];
 
 }
 
+
+// ----------------------------------------- User batting Function -------------------------------------
 string userBowl() {
 	const int constDistance = 20;
 	const int constWidth = 10;
@@ -504,11 +539,11 @@ string userBowl() {
 }
 
 
-// wicket increment function
-int out(Team *battingTeam)
+// -------------------------------------------- wicket increment function -------------------------------------
+int out(Team* &battingTeam)
 {
 	srand(time(0));
-	int out = rand() % 3;
+	int out = rand() % 4;
 	if (out == 0)
 	{
 		return 1;
@@ -516,56 +551,32 @@ int out(Team *battingTeam)
 	return 0;
 }
 
-// Display innings Function
-bool displayScoreCard(Team* battingTeam, Team* bowlingTeam, Player* batsman, Player* bowler, int num) {
-
-// ------------------------
-	static int count = 0;
-	static int overs = 0;
-// ----------------------------------------------------
-
-	if (count >= num * 6) {
-		cout << "TARGET: " << bowlingTeam->getRuns();
-		
-		if (count == num * 6)							// for the sake of maintaining overs in 2nd innings
-			overs = 0;
-
-		if (battingTeam->getRuns() > bowlingTeam->getRuns() && battingTeam->getWickets() != 10) {
-			return 1;
-		}
-		else if(battingTeam->getRuns() < bowlingTeam->getRuns() && battingTeam->getWickets() == 10) {
-			return 1;
-		}
-	}
-	else
-		cout << "TARGET: _____";
-
-// ----------------------------------------------------
-	cout << "\t\t\t\t\t\t\t" << "overs: " << (overs /6) << "." << (overs % 6) << endl;
-// ----------------------------------------------------
+// ------------------------------------------ Display innings Function -------------------------------------
+void displayScoreCard(Team* &battingTeam, Team* &bowlingTeam, Player* &batsman, Player* &bowler) {
 
 
-	cout << "------------------------------- Score Card -------------------------------------" << endl;
+// --------------------------------------------------------------------------------------------------------------------------
+	cout << "\t\t\t\t\t\t\t" << "overs: " << (battingTeam->getOvers() / 6) << "." << (battingTeam->getOvers() % 6) << endl;
+// --------------------------------------------------------------------------------------------------------------------------
 
-	cout << "BattingTeam: " << battingTeam->getName() << "\t\t\t\t\t\t" << "Batsman: " << batsman->getName() << endl;
-	cout << "BowlingTeam: " << bowlingTeam->getName() << "\t\t\t\t\t\t" << "Bowler: " << bowler->getName() << endl << endl << endl << endl << endl;
+
+	cout << "------------------------------- Score Card --------------------------------------" << endl;
+
+	cout << "BattingTeam: " << battingTeam->getName() << "\t\t\t\t\t" << "Batsman: " << batsman->getName() << endl;
+	cout << "BowlingTeam: " << bowlingTeam->getName() << "\t\t\t\t\t" << "Bowler: " << bowler->getName() << endl << endl << endl << endl << endl;
 
 
 
 	cout << battingTeam->getName() << ": (" << battingTeam->getRuns() << " | " << battingTeam->getWickets() << ")" << endl;
-	cout << "------------------------------------------------------------------------------------" << endl;
-	cout << batsman->getName() << ": "<< batsman->getRuns() << "\t\t\t\t\t\t\t" << bowler->getName() << ": (" << bowler->getBowlerRuns() << "/" << bowler->getWickets() << ")" << endl;
-	cout << "------------------------------------------------------------------------------------" << endl << endl << endl;
+	cout << "---------------------------------------------------------------------------------" << endl;
+	cout << batsman->getName() << ": "<< batsman->getRuns() << "\t\t\t\t\t\t" << bowler->getName() << ": (" << bowler->getBowlerRuns() << "/" << bowler->getWickets() << ")" << endl;
+	cout << "---------------------------------------------------------------------------------" << endl << endl << endl;
 
 
-
-	
 // --------------
-	count++;
-	overs++;
+	battingTeam->setOvers();
 // --------------
 
-	return 0;
 }
 
 void gameDecision(Team &alpha, Team &comp) {
@@ -639,5 +650,64 @@ void pointerSetter(int inningsChanger, Team &alpha, Team &comp, Team* &battingTe
 			battingTeam = &alpha;
 			bowlingTeam = &comp;
 		}
+	}
+}
+
+void finalScoreCard(Team& alpha, Team& comp) {
+	cout << "--------------------------------------- Match Summary -------------------------------------------" << endl << endl;
+	
+	cout << "                                      Batting ScoreCard" << endl;
+
+	cout << "-------------------------------------------------------------------------------------------------" << endl;
+	cout << "  " << alpha.getName() << endl;
+	cout << "----------------------" << endl;
+	
+	for (int i = 0; i < 11; i++) {
+	
+		if (alpha.getPlayer(i).getRuns() == '\0') {
+			break;
+		}
+		cout << "  " << setw(20) << left << alpha.getPlayer(i).getName() << left;
+		cout << alpha.getPlayer(i).getRuns() << endl;
+	}
+
+	cout << endl << endl;
+
+	cout << "-------------------------------------------------------------------------------------------------" << endl;
+	cout << "  " << comp.getName() << endl;
+	cout << "---------------------" << endl;
+
+	for (int i = 0; i < 11; i++) {
+
+		if (comp.getPlayer(i).getRuns() == '\0') {
+			break;
+		}
+		cout << "  " << setw(20) << left << comp.getPlayer(i).getName() << left;
+		cout << comp.getPlayer(i).getRuns() << endl;
+	}
+	cout << "-------------------------------------------------------------------------------------------------" << endl;
+	cout << endl;
+
+	cout << "                                      Bowling ScoreCard" << endl;
+	cout << " " <<alpha.getName() << " ------------" << endl;
+
+	for (int i = 10; i > 0; i--) {
+
+		if (alpha.getPlayer(i).getBowlerRuns() == '\0') {
+			break;
+		}
+		cout << "  " << setw(20) << left << alpha.getPlayer(i).getName() << left;
+		cout << "( " << alpha.getPlayer(i).getBowlerRuns() << " | " << alpha.getPlayer(i).getWickets() << " )" << endl;
+	}
+	cout << endl << endl;
+
+	cout << " " <<comp.getName() << " -------------" << endl;
+	for (int i = 10; i > 0; i--) {
+
+		if (comp.getPlayer(i).getBowlerRuns() == '\0') {
+			break;
+		}
+		cout << "  " << setw(20) << left << comp.getPlayer(i).getName() << left;
+		cout << "(" << comp.getPlayer(i).getBowlerRuns() << " | " << comp.getPlayer(i).getWickets() << " )" << endl;
 	}
 }

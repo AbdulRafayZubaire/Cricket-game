@@ -12,7 +12,7 @@ private:
 	Player beta[11] = {};					// Final playing 11 member squad
 	int totalRuns;
 	int wickets;
-	//int overs;
+	int overs;
 	int toss;
 	string firstIn;
 	string secondIn;
@@ -35,6 +35,8 @@ public:
 	void addRuns(int);
 	void addWicket();
 	int getWickets();
+	void setOvers();
+	int getOvers();
 	Player& getPlayer(int);
 	int getRuns();
 	void setWin(int);
@@ -50,6 +52,19 @@ Team::Team() {
 	secondIn = '\0';
 	win = '\0';
 	name = '\0';
+	overs = '\0';
+}
+
+// set overs
+void Team::setOvers() {
+
+	this->overs++;
+}
+
+// get overs
+int Team::getOvers() {
+
+	return this->overs;
 }
 
 // set win
