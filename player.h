@@ -31,9 +31,9 @@ public:
 Player::Player() {
 	this->name = '\0';
 	this->category = '\0';
-	this->runs = '\0';
-	this->wickets = '\0';
-	this->bowlerRuns = '\0';
+	this->runs = NULL;
+	this->wickets = NULL;
+	this->bowlerRuns = NULL;
 }
 
 // Add Bowler Runs

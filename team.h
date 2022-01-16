@@ -26,10 +26,9 @@ public:
 	string getFirstInnings();
 	void swap(int, int);
 	void playingOrder();
-	void display();
-	void displaySquad();
+	void display();									// display final 11 players
+	void displaySquad();							// display complete squad
 	void gameToss(Team&);
-	//string getToss();
 	void setName(int);
 	string getName();
 	void addRuns(int);
@@ -98,7 +97,7 @@ string Team::getName() {
 
 // get player reference function
 Player& Team::getPlayer(int num) {
-	
+
 	return beta[num];
 }
 
@@ -112,18 +111,18 @@ void Team::setName(int num) {
 	else if (num == 3) {
 		this->name = "New Zealand";
 	}
-	else if(num == 4) {
+	else if (num == 4) {
 		this->name = "Zimbabwe";
 	}
-	else{
+	else {
 		this->name = "Sri Lanka";
 	}
 }
 
 // setting Innings
 string Team::getFirstInnings() {
-	
-		return firstIn;
+
+	return firstIn;
 }
 
 // set player member function
@@ -249,11 +248,6 @@ void Team::setPlayers(int t, string playing) {
 	}
 }
 
-
-//string Players::getplayers() {
-//
-//}
-
 void Team::playingOrder() {
 
 	int id = 0, place = 0;
@@ -308,49 +302,49 @@ void Team::displaySquad() {
 }
 
 // TOSS
-void Team::gameToss(Team &comp) {
+void Team::gameToss(Team& comp) {
 	srand(time(0));
-	
+
 	cout << "\npress Enter to go for the Toss: " << endl;
 	_getch();
-	
+
 	system("cls");
 
-	int userToss;
+	char userToss;
 	cout << "Heads or Tails ?" << endl;
 	cout << "1. Heads" << endl;
 	cout << "2. Tails" << endl;
 	cout << "Enter your choice: ";
-	cin >> userToss;
-	while (userToss != 1 && userToss != 2) {
+	userToss = _getch();
+	while (userToss != '1' && userToss != '2') {
 		cout << "\t\t\t!--WARNING--! -> Choose between (1) and (2) only " << endl;
-		cin >> userToss;
+		userToss = _getch();
 	}
 
 	system("cls");
 
 	int random = 1 + rand() % 2;			// random function for the toss
-	if (userToss == random) {
+	if (((int)userToss - 48) == random) {
 
 		this->toss = 1;											//setting the toss attribute to either true or false
 		comp.toss = 0;
 
-		int choice;
+		char choice;
 		cout << "Congratulations! You won the toss.. Would you like to bat or bowl ? " << endl;
 		cout << "1. Bat\n2. Ball" << endl;
-		
-		cout << "Your choice: ";
-		cin >> choice;
 
-		while (choice != 1 && choice != 2) {
+		cout << "Your choice: ";
+		choice = _getch();
+
+		while (choice != '1' && choice != '2') {
 			cout << "------- Invalid choice -------";
 			cout << "1. Bat\n2. Ball" << endl;
-			cin >> choice;
+			choice = _getch();
 		}
 
 		system("cls");
 
-		if (choice == 1) {
+		if (choice == '1') {
 			cout << "You have selected to Bat First" << endl << endl;
 
 			this->firstIn = "Bat";
@@ -358,7 +352,7 @@ void Team::gameToss(Team &comp) {
 			comp.firstIn = "Ball";
 			comp.secondIn = "Bat";
 		}
-		else{
+		else {
 			cout << "You have selected to Ball First" << endl << endl;
 
 			this->firstIn = "Ball";
@@ -374,7 +368,7 @@ void Team::gameToss(Team &comp) {
 
 		cout << "Sorry, You lost the toss.. " << endl;
 		int random = rand() % 2;
-		
+
 		if (random == 1) {
 			cout << "The opponent has selected to Ball First" << endl << endl;
 
